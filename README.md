@@ -4,6 +4,7 @@ A product naming suggestion algorithm
 `
 root_name = "prod"
 `
+
 `
 max_name_length = 8
 `
