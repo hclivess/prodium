@@ -1,7 +1,9 @@
 import json
+import whois
 
-root_name = "prod"
+root_name = "nad"
 max_name_length = 8
+check_domain = True
 
 vowels = ["a", "e", "i", "o", "u"]
 spice = []
@@ -16,6 +18,17 @@ def is_vowel(letter):
     else:
         return False
 
+def is_registered(name):
+    try:
+        registered = whois.whois(f"{name}.com")
+    except:
+        print(f"Domain registration check failed for {name}, assuming unregistered")
+        registered = False
+
+    if registered:
+        return True
+    else:
+        return False
 
 def process_endings(vowel_start=True):
     endings = []
@@ -41,15 +54,19 @@ def join(root, endings):
     output = []
     for entry in endings:
         candidate = root + entry
+
+
         if len(candidate) < max_name_length:
-            output.append(candidate)
+            if check_domain:
+                if not is_registered(candidate):
+                    output.append(candidate)
+            else:
+                output.append(candidate)
+
     return output
 
 
-print(root_name[-1])
 root_end_vowel = not is_vowel(root_name[-1])
-print(root_end_vowel)
-
 processed = process_endings(vowel_start=root_end_vowel)
 joined = join(root=root_name, endings=processed)
 
